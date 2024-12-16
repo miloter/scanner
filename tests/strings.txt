@@ -1,0 +1,2 @@
+Hola "soy una cadena simple"
+Pero "yo soy ""una cadena"" especial"

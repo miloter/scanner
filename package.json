@@ -1,0 +1,19 @@
+{
+  "main": "scanner.js",
+  "version": "1.0.0",
+  "author": "miloter",
+  "engines": {
+    "node": ">= 13.2.0"
+  },
+
+  "name": "@miloter/scanner",
+  "description": "Lexical analyzer for texts in memory",
+  "type": "module",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT"
+}
