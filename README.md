@@ -21,9 +21,9 @@ by the order given above from top to bottom.
 scanner is an ESM module so you will need to add to your package.json: "type": "module"
 
 ## Installation
-```bash/poershell
+```bash/powershell
 npm install @miloter/scanner
----
+```
 
 ## Usage
 ```js

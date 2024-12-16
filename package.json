@@ -5,7 +5,11 @@
   "engines": {
     "node": ">= 13.2.0"
   },
-
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/miloter/scanner.git"
+  },
+  "license": "MIT",
   "name": "@miloter/scanner",
   "description": "Lexical analyzer for texts in memory",
   "type": "module",
@@ -14,6 +18,5 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "license": "MIT"
+  }
 }
