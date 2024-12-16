@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/miloter/scanner.git"
+    "url": "git+https://github.com/miloter/scanner.git"
   },
   "license": "MIT",
   "name": "@miloter/scanner",

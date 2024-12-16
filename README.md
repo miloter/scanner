@@ -28,7 +28,33 @@ npm install @miloter/scanner
 ## Usage
 ```js
 import Scanner from '@miloter/scanner';
+
 const scan = new Scanner('hello world\n new \r\n what do you \t bring us');
+
+let token = scan.nextToken();
+
+while (token === Scanner.ident) {
+    console.log(scan.getLexeme());
+    token = scan.nextToken();
+}
+```
+
+## Examples
+
+### Creating instances
+```js
+import Scanner from '@miloter/scanner';
+
+const scan1 = new Scanner('hola mundo', true, true);
+const scan2 = new Scanner('hola mundo', true);
+const scan3 = new Scanner('hola mundo');
+```
+
+### Reading identifiers
+```js
+import Scanner from '@miloter/scanner';
+
+const scan = new Scanner('hola mundo\n nuevo \r\n que nos \t traes');
 
 let token = scan.nextToken();
 
