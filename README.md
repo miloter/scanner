@@ -21,12 +21,12 @@ by the order given above from top to bottom.
 scanner is an ESM module so you will need to add to your package.json: "type": "module"
 
 ## Installation
-'''bash/poershell
+```bash/poershell
 npm install @miloter/scanner
 ---
 
 ## Usage
-'''js
+```js
 import Scanner from '@miloter/scanner';
 const scan = new Scanner('hello world\n new \r\n what do you \t bring us');
 
@@ -36,4 +36,4 @@ while (token === Scanner.ident) {
     console.log(scan.getLexeme());
     token = scan.nextToken();
 }
-'''
+```
