@@ -1,6 +1,14 @@
 {
+  "name": "@miloter/scanner",
+  "version": "1.1.0",
   "main": "scanner.js",
-  "version": "1.0.0",
+  "description": "Lexical analyzer for texts in memory",
+  "keywords": [
+    "lexical",
+    "analyzer",
+    "grammar",
+    "parser"
+  ],
   "author": "miloter",
   "engines": {
     "node": ">= 13.2.0"
@@ -10,12 +18,7 @@
     "url": "git+https://github.com/miloter/scanner.git"
   },
   "license": "MIT",
-  "name": "@miloter/scanner",
-  "description": "Lexical analyzer for texts in memory",
   "type": "module",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }

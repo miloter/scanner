@@ -312,7 +312,7 @@ export default class Scanner {
      * Estado 3 -> 3:               ''
      * @returns 
      */
-    #leerNumHex() {
+    #readNumHex() {
         const fin = 4;
 
         let c;
@@ -354,17 +354,17 @@ export default class Scanner {
                     if ((c >= '0') && (c <= '9')) {
                         estado = 3;
                         lngAceptada = lngParcial;
-                        if (!this.#numOverflow) this.#calculaEntero(c.charCodeAt(0) - 48, 16);
+                        if (!this.#numOverflow) this.#calculateInt(c.charCodeAt(0) - 48, 16);
 
                     }
                     else if ((c >= 'A') && (c <= 'F')) {
                         estado = 3;
                         lngAceptada = lngParcial;
-                        if (!this.#numOverflow) this.#calculaEntero(c.charCodeAt(0) - 55, 16);
+                        if (!this.#numOverflow) this.#calculateInt(c.charCodeAt(0) - 55, 16);
                     } else if ((c >= 'a') && (c <= 'f')) {
                         estado = 3;
                         lngAceptada = lngParcial;
-                        if (!this.#numOverflow) this.#calculaEntero(c.charCodeAt(0) - 87, 16);
+                        if (!this.#numOverflow) this.#calculateInt(c.charCodeAt(0) - 87, 16);
                     } else {
                         estado = fin;
                     }
@@ -391,7 +391,7 @@ export default class Scanner {
         let result = 0;
         let entero = [];
 
-        if (this.#leerNumHex()) {
+        if (this.#readNumHex()) {
             if (this.#numOverflow) {
                 this.#numRange = Scanner.rangeOverflow;
             } else {
@@ -399,7 +399,7 @@ export default class Scanner {
             }
             result = true;
         }
-        else if (this.#leerNumReal(entero)) {
+        else if (this.#readNumReal(entero)) {
             if (this.#numOverflow) {
                 this.#numRange = Scanner.rangeOverflow;
             } else if (entero[0]) {
@@ -430,7 +430,7 @@ export default class Scanner {
      * @param {*} entero 
      * @returns 
      */
-    #leerNumReal(entero) {
+    #readNumReal(entero) {
         let c;
         let fin = 7;
         let estado = 0;
@@ -468,7 +468,7 @@ export default class Scanner {
                     if ((c >= '0') && (c <= '9')) {
                         estado = 1;
                         lngAceptada = lngParcial;
-                        this.#calculaRealParteEntera(c.charCodeAt(0) - 48, entero);
+                        this.#calculateRealIntPart(c.charCodeAt(0) - 48, entero);
                     } else {
                         estado = fin;
                     }
@@ -476,7 +476,7 @@ export default class Scanner {
                 case 1:
                     if ((c >= '0') && (c <= '9')) {
                         lngAceptada = lngParcial;
-                        this.#calculaRealParteEntera(c.charCodeAt(0) - 48, entero);
+                        this.#calculateRealIntPart(c.charCodeAt(0) - 48, entero);
                     } else if (c === (this.#usePoint ? '.' : ',')) {
                         estado = 2;
                     } else if ((c === 'E') || (c === 'e')) {
@@ -491,7 +491,7 @@ export default class Scanner {
                         estado = 3;
                         entero[0] = false;
                         lngAceptada = lngParcial;
-                        this.#calculaRealParteDecimal(c.charCodeAt(0) - 48);
+                        this.#calculateRealDecimalPart(c.charCodeAt(0) - 48);
                     } else {
                         estado = fin;
                     }
@@ -499,7 +499,7 @@ export default class Scanner {
                 case 3:
                     if ((c >= '0') && (c <= '9')) {
                         lngAceptada = lngParcial;
-                        this.#calculaRealParteDecimal(c.charCodeAt(0) - 48);
+                        this.#calculateRealDecimalPart(c.charCodeAt(0) - 48);
                     } else if ((c === 'E') || (c === 'e')) {
                         estado = 4;
                     } else {
@@ -511,7 +511,7 @@ export default class Scanner {
                         estado = 6;
                         entero[0] = false;
                         lngAceptada = lngParcial;
-                        this.#calculaRealParteExp(c.charCodeAt(0) - 48, sigNeg);
+                        this.#calculateRealExpPart(c.charCodeAt(0) - 48, sigNeg);
                     }
                     else if (c === '+') {
                         estado = 5;
@@ -526,7 +526,7 @@ export default class Scanner {
                     if ((c >= '0') && (c <= '9')) {
                         estado = 6;
                         lngAceptada = lngParcial;
-                        this.#calculaRealParteExp(c.charCodeAt(0) - 48, sigNeg);
+                        this.#calculateRealExpPart(c.charCodeAt(0) - 48, sigNeg);
                     }
                     else {
                         estado = fin;
@@ -535,7 +535,7 @@ export default class Scanner {
                 case 6:
                     if ((c >= '0') && (c <= '9')) {
                         lngAceptada = lngParcial;
-                        this.#calculaRealParteExp(c.charCodeAt(0) - 48, sigNeg);
+                        this.#calculateRealExpPart(c.charCodeAt(0) - 48, sigNeg);
                     } else {
                         estado = fin;
                     }
@@ -545,7 +545,7 @@ export default class Scanner {
 
         if (lngAceptada > 0) {
             // Se devuelve lo aceptado
-            this.#calculaReal(entero[0], sigNeg);
+            this.#calculateReal(entero[0], sigNeg);
             this.#tokenIndex = this.#indexBuffer;
             this.#indexBuffer += lngAceptada;
             this.#col += lngAceptada;
@@ -556,7 +556,7 @@ export default class Scanner {
     }
 
     // Termina de calcular un número real
-    #calculaReal(entero, sigNeg) {
+    #calculateReal(entero, sigNeg) {
         this.#numOverflow = false;
 
         if (entero || this.#mant === 0) {
@@ -581,7 +581,7 @@ export default class Scanner {
         }
     }
 
-    #calculaEntero(digito, b) {
+    #calculateInt(digito, b) {
         if (this.#mant <= Math.floor((Scanner.maxMantissa - digito) / b)) {
             this.#mant = this.#mant * b + digito;
             this.#num = this.#mant;
@@ -590,7 +590,7 @@ export default class Scanner {
         }
     }
 
-    #calculaRealParteEntera(digito, entero) {
+    #calculateRealIntPart(digito, entero) {
         if (this.#mant <= Math.floor((Scanner.maxMantissa - digito) / 10)) {
             this.#mant = this.#mant * 10 + digito;
 
@@ -608,7 +608,7 @@ export default class Scanner {
         }
     }
 
-    #calculaRealParteDecimal(digito) {
+    #calculateRealDecimalPart(digito) {
         if (this.#mant <= Math.floor((Scanner.maxMantissa - digito) / 10)) {
             this.#mant = this.#mant * 10 + digito;
             this.#exp1--;
@@ -626,7 +626,7 @@ export default class Scanner {
         // se ignoran los resultados que provoquen desbordamiento
     }
 
-    #calculaRealParteExp(digito, sigNeg) {
+    #calculateRealExpPart(digito, sigNeg) {
         // se ignoran los resultados que provoquen desbordamiento
         if (this.#exp2 <= Math.floor((Scanner.maxExpo - digito) / 10)) {
             this.#exp2 = this.#exp2 * 10 + digito;
@@ -646,7 +646,7 @@ export default class Scanner {
                     if (this.#isEol()) {
                         enComentario = false;
                         if (this.#ignoreEndOfLines) { // Si debe ignorar el fin de línea
-                            this.#avanzarLinea();
+                            this.#advanceLine();
                         } else {
                             break;
                         }
@@ -656,7 +656,7 @@ export default class Scanner {
                     } // Sigue avanzando
                 } else { // claseComment = commentML
                     if (this.#isEol()) {
-                        this.#avanzarLinea();
+                        this.#advanceLine();
                     } else if (this.#matchString(this.#operatorCommentMultilineEnd)) {
                         this.#indexBuffer += this.#operatorCommentMultilineEnd.length;
                         this.#col += this.#operatorCommentMultilineEnd.length;
@@ -671,7 +671,7 @@ export default class Scanner {
                     this.#indexBuffer++;
                     this.#col++;
                 } else if (this.#ignoreEndOfLines && this.#isEol()) {
-                    this.#avanzarLinea();
+                    this.#advanceLine();
                 } else if (this.#ignoreComments && this.#hasOperator(this.#operatorCommentEol)) {
                     // Pasa al estado enComentario
                     this.#indexBuffer += this.#operatorCommentEol.length;
@@ -716,7 +716,7 @@ export default class Scanner {
      * Devueve true si lee comentarios multilinea.
      * @returns 
      */
-    #leerComentarioMultiLinea() {
+    #readCommentMutiline() {
         if (!this.#hasOperator(this.#operatorCommentMultilineBegin))
             return false;
 
@@ -725,7 +725,7 @@ export default class Scanner {
         this.#col += this.#operatorCommentMultilineBegin.length;
         while (this.#indexBuffer <= this.#bufferUbound) {
             if (this.#isEol()) {
-                this.#avanzarLinea();
+                this.#advanceLine();
             } else if (this.#matchString(this.#operatorCommentMultilineEnd)) {
                 this.#indexBuffer += this.#operatorCommentMultilineEnd.length; // Avanza el inicio del comentario
                 this.#col += this.#operatorCommentMultilineEnd.length;
@@ -1081,7 +1081,7 @@ export default class Scanner {
      * Avanza a la siguiente línea. Supone que el carácter actual
      * es un separador de líneas.
      */
-    #avanzarLinea() {
+    #advanceLine() {
         this.#lastCol = this.#col; // Ultima columna de esta línea
 
         // Comprueba el caso de sistemas Windows '\r\n'
@@ -1108,10 +1108,10 @@ export default class Scanner {
      * 		- Avance de línea
      * @returns 
      */
-    #leerFinLinea() {
+    #readEol() {
         if (this.#isEol()) {
             this.#tokenIndex = this.#indexBuffer; // Salva el puntero del buffer
-            this.#avanzarLinea(); // Avanza la línea
+            this.#advanceLine(); // Avanza la línea
             return true;
         }
         else
@@ -1388,6 +1388,10 @@ export default class Scanner {
         return this.#text;
     }
 
+    /**
+     * Establece el texto de la entrada.
+     * @param {string} text Texto de la entrada.
+     */
     setText(text) {
         this.#text = text;
         this.resetVarsAnalisis();
@@ -1395,11 +1399,11 @@ export default class Scanner {
 
     /**
      * Devuelve una subcadena del buffer de entrada.
-     * @param {*} start 
-     * @param {*} end
-     * @returns 
+     * @param {number} start Posición de inicio.
+     * @param {number} end Posición final (no incluida).
+     * @returns {string}
      */
-    substr(start, end) {
+    substring(start, end) {
         return this.#text.substring(start, end);
     }
 
@@ -1433,7 +1437,6 @@ export default class Scanner {
     getNumRange() {
         return this.#numRange;
     }
-
 
     /**
      * Devuelve la mantisa del último número leído.
@@ -1493,6 +1496,10 @@ export default class Scanner {
         return this.#token;
     }
 
+    /**
+     * Devuelve el token previamente leído en la cadena de entrada.
+     * @returns {number}
+     */
     getTokenPrev() {
         return this.#tokenPrev;
     }    
@@ -1552,6 +1559,10 @@ export default class Scanner {
             return this.#col - this.tokenLength();
     }
 
+    /**
+     * Establece el operador de comentarios multilínea inicial.
+     * @param {string} value 
+     */
     setOperatorCommentMultilineBegin(value) {
         if (value.length === 0) {
             this.#operatorCommentMultilineBegin = '';
@@ -1566,10 +1577,18 @@ export default class Scanner {
         }
     }
 
+    /**
+     * Devuelve el operador de comentarios multilínea inicial.
+     * @returns {string}
+     */
     getOperatorCommentMultilineBegin() {
         return this.#operatorCommentMultilineBegin;
     }
 
+    /**
+     * Establece el operador de comentarios multilínea final.
+     * @param {string} value 
+     */
     setOperatorCommentMultilineEnd(value) {
         if (value.length === 0) {
             this.#operatorCommentMultilineBegin = '';
@@ -1584,10 +1603,18 @@ export default class Scanner {
         }
     }
 
+    /**
+     * Devuelve el operador de comentarios multilínea final.
+     * @returns 
+     */
     getOperatorCommentMultilineEnd() {
         return this.#operatorCommentMultilineEnd;
     }
 
+    /**
+     * Establece el operador de cadenas.
+     * @param {string} value 
+     */
     setOperatorString(value) {
         if (value.length === 0) {
             this.#operatorString = '';
@@ -1603,6 +1630,10 @@ export default class Scanner {
         }
     }
 
+    /**
+     * Devuelve el operador de cadenas.
+     * @returns {string}
+     */
     getOperatorString() {
         return this.#operatorString;
     }
@@ -1626,8 +1657,8 @@ export default class Scanner {
 
     /**
      * Añade una nueva palabra reservada al analizador.
-     * @param {*} token 
-     * @param {*} kw 
+     * @param {number} token 
+     * @param {string} kw 
      */
     addKeyword(token, kw) {
         if (token > Scanner.maxUserIndex) {
@@ -1650,8 +1681,8 @@ export default class Scanner {
     /**
      * Añade una nuevo operador al analizador.
      * Diferentes operadores pueden tener el mismo índice.
-     * @param {*} token 
-     * @param {*} opr 
+     * @param {number} token 
+     * @param {string} opr 
      */
     addOperator(token, opr) {
         if (token > Scanner.maxUserIndex) {
@@ -1692,7 +1723,7 @@ export default class Scanner {
                 this.#tokenClass = Scanner.comment;
                 this.#token = Scanner.comment;
                 return this.#token;
-            } else if (this.#leerComentarioMultiLinea()) {
+            } else if (this.#readCommentMutiline()) {
                 this.#tokenClass = Scanner.comment;
                 this.#token = Scanner.comment;
                 return this.#token;
@@ -1746,7 +1777,7 @@ export default class Scanner {
 
         // Finales de línea
         if (!this.#ignoreEndOfLines) {
-            if (this.#leerFinLinea()) {
+            if (this.#readEol()) {
                 this.#tokenClass = Scanner.eol;
                 this.#token = Scanner.eol;
                 return this.#token;
@@ -1815,5 +1846,12 @@ export default class Scanner {
         this.#mant = state.mant;
 
         return this.#token;
+    }
+
+    /**
+     * Elimina la cima de la pila pero sin recuperar el estado del analizador.
+     */
+    removeTopStack() {
+        this.#states.pop();        
     }
 }
