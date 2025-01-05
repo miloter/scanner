@@ -865,7 +865,6 @@ export default class Scanner {
         this.#indexBuffer++;
 
         if (this.#inEol()) {
-            this.#indexBuffer = index;
             return -1;
         }
 
